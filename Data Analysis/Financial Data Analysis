@@ -1,0 +1,123 @@
+library(date)
+library(tidyverse)
+library(dplyr)
+##dirr is where the data files are
+dirr<- ""
+setwd(dirr)
+
+BASF<-read.csv(paste(dirr,"/BASFY.csv",sep=""))$Return
+Total<-as.numeric(read.csv(paste(dirr,"/TOT.csv",sep=""))$Return)
+Siemens<-read.csv(paste(dirr,"/SIEGY.csv",sep=""))$Return
+Sanofi<-read.csv(paste(dirr,"/SNY.csv",sep=""))$Return
+time=read.csv(paste(dirr,"/SNY.csv",sep=""))$Date %>% as.character() %>% as.date(order="ymd")
+returns<-data.frame(cbind(time,BASF,Total,Siemens,Sanofi))
+returns<-returns[-1,]
+
+
+par(mfrow=c(2,2))
+plot(returns[,1],returns[,2],type='l')
+plot(returns[,1],returns[,3],type='l')
+plot(returns[,1],returns[,4],type='l')
+plot(returns[,1],returns[,5],type='l')
+
+
+#run wbs
+# set.seed(75422)
+source("WBS_function_June.R")
+intervals<-getIntervals(1:nrow(returns),600)
+intervals<-rbind(intervals,c(1,1259))
+# cdf(1.35)
+thresh<-1.22
+
+
+
+depth="mahal"
+dat<-returns[,2:5]
+
+cp1<-WBS(intervals ,1,1259,thresh,dat,depth)
+cp<-cp1 %>% getScwartzCriterias(data=dat,depth=depth) %>% applySCH(N=nrow(dat),alpha=.5)
+cp
+# beepr::beep()
+########
+par(mfrow=c(2,2))
+plot(time[-1],returns[,2],type='l',xlab="time",ylab=names(returns)[2])
+abline(v=returns[cp,1],col="red")
+plot(time[-1],returns[,3],type='l',xlab="time",ylab=names(returns)[3])
+abline(v=returns[cp,1],col="red")
+plot(time[-1],returns[,4],type='l',xlab="time",ylab=names(returns)[4])
+abline(v=returns[cp,1],col="red")
+plot(time[-1],returns[,5],type='l',xlab="time",ylab=names(returns)[5])
+abline(v=returns[cp,1],col="red")
+
+covMat<-list()
+for(i in 1:(length(cp)+1)){
+  if(i==1)
+    covMat[[i]]<-10000*cov(returns[1:cp[1],2:5])
+  else if(i==(length(cp)+1))
+    covMat[[i]]<-10000*cov(returns[cp[i-1]:1259,2:5])
+  else
+    covMat[[i]]<-10000*cov(returns[cp[i-1]:cp[i],2:5])
+}
+covMat
+
+ovT<-c()
+for(i in 1:(length(cp)+1)){
+  ovT<-rbind(ovT,c(covMat[[i]])[c(1:4,2:4+4,3:4+8,16)])
+}
+
+
+par(mfrow=c(1,1))
+matplot(ovT,type='l',xlab="")
+abline(v=1:length(cp))
+matplot(ovT,type='l',ylim=c(0,20))
+abline(v=1:length(cp))
+
+time[sort(cp)]
+cp1<-cp1[order(cp1[,2],decreasing = T),]
+cp1[1:length(cp),]
+
+#solution path
+
+getCP<-Vectorize(function(alpha){
+  WBS(intervals ,1,1259,thresh,dat,depth) %>% getScwartzCriterias(data=dat,depth=depth) %>% applySCH(N=nrow(dat),alpha=alpha)
+})
+
+alphas<-seq(2,0.005,length.out = 10)
+result<-getCP(alphas)
+# result2<-getCP(c())
+beepr::beep()
+result
+
+k=(1:20000)
+cdf<-function(q){1+2*sum(((-1)^k)*exp(-2*k^2*q^2))}
+qBB<-function(p){return(uniroot(function(q){cdf(q)-p},c(1,2.5))$root)}
+
+#sBonf correction
+Bon_Corr<-function(cp,alpha=.05){
+  cp<-cp[order(cp[,2],decreasing = T),]
+  inds<-cp[,1]
+  new_thresh=qBB(1-alpha/length(inds))
+  return(inds[cp[,2]>new_thresh])
+}
+BH_Corr<-function(cp,alpha=.05){
+  cp<-cp[order(cp[,2],decreasing = T),]
+  inds<-cp[,1]
+  alphas<-alpha/(length(inds)+1-1:length(inds))
+  new_thresh=sapply(1-alphas,qBB)
+  
+  pass<-mapply('>',cp[,2],new_thresh)
+  #first failing ind
+  ff<-which(!pass)[1]
+  
+  #none fail
+  if(is.na(ff))
+    return(inds)
+  else if(ff==1)
+    return(NULL)
+  else
+    return(inds[1:(ff-1)])
+}
+
+BH_Corr(cp1[1:length(cp),])
+Bon_Corr(cp1[1:length(cp),])
+
