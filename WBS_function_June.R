@@ -37,7 +37,7 @@ testStat<-function(range,data,depth){
 
 getStatFromDepths<-function(depths,N){
   ranks<-rank(depths,ties.method = "random")
-  expected.val<-(N-1)/2
+  expected.val<-(N+1)/2
   std.dev<-sqrt((N^2-1)/12)  
   cusum<-cumsum(N^(-0.5)*(ranks-expected.val)/std.dev)
   return(abs(cusum)[1:(length(cusum)-1)])
