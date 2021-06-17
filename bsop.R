@@ -61,7 +61,5 @@ BSOP(p*log(n),n-p*log(n),data,300)
 
 
 
-binary.segmentation(data_M,alpha=.05,power_enhancement=TRUE,M_threshold=0.05)
-
 
 
