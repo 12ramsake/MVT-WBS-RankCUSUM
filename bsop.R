@@ -50,16 +50,35 @@ BSOP=function(s,e,data,tau=1,cps=NULL){
 
 data=rbind(replicate(2,rnorm(60)),replicate(2,rnorm(60,0,10)))
 p=2
-n=120
+n=1000
 # BSOP(p*log(n),n-p*log(n),data,50*sqrt(n)^.9)
 # unique()
 
-BSOP(p*log(n),n-p*log(n),data,300)
+BSOP(p*log(n),n-p*log(n),data,40)
 
 
+mini_sim=function(){
+BSOP(p*log(n),n-p*log(n),rbind(replicate(2,rnorm(n/2)),replicate(2,rnorm(n/2,0,sqrt(2.5)))),1)
+}
+
+ress=replicate(100,mini_sim())
+ress
+vl=lapply(ress, function(x){x[x[,2]>11.5,1]})
+boxplot(unlist(lapply(vl, length))-2)
 
 
+ress
 
+a=Vectorize(function(t){
+  vl=lapply(ress, function(x){x[x[,2]>t,1]})
+  sqrt(mean((unlist(lapply(vl, length))-2)^2))
+  
+})
+
+curve(a(x),8,100)
+
+
+# binary.segmentation(data_M,alpha=.05,power_enhancement=TRUE,M_threshold=0.05)
 
 
 

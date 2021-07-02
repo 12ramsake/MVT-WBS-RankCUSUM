@@ -136,6 +136,8 @@ WBSIP<-function(data,s,e,intervals,tau){
 
 
 intervals=getIntervals(0:floor(n/2),100)
+#check if the interval is big enough
+
 big_enough=function(i){(i[2]-i[1])>(2*p*log(n/2)+1)}
 intervals=intervals[apply(intervals, 1, big_enough),]
 

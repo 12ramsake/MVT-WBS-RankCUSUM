@@ -18,7 +18,7 @@ library(doParallel)
 library(doRNG)
 
 #results dirrectory
-dirr<- ""
+dirr<- "/u/k3ramsay/ResearchDocuments/output/MV_CP_PAPER_WANG_METHOD/"
 setwd(dirr)
 
 
