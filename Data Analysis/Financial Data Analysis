@@ -1,8 +1,10 @@
 library(date)
 library(tidyverse)
+library(timeSeries)
 library(dplyr)
-##dirr is where the data files are
+library(vars)
 dirr<- ""
+# dirr<- "C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/Financial Data Analysis"
 setwd(dirr)
 
 BASF<-read.csv(paste(dirr,"/BASFY.csv",sep=""))$Return
@@ -21,15 +23,50 @@ plot(returns[,1],returns[,4],type='l')
 plot(returns[,1],returns[,5],type='l')
 
 
+
+
+
+
+
+par(mfrow=c(1,1))
+pdf(file="R1.pdf",height=6,width=10)
+plot(time[-1],returns[,2],type='l',xlab="Date",ylab=names(returns)[2],bty="n",cex.lab=1.25,cex.axis=1.25)
+dev.off()
+
+pdf(file="R2.pdf",height=6,width=10)
+plot(time[-1],returns[,3],type='l',xlab="Date",ylab=names(returns)[3],bty="n",cex.lab=1.25,cex.axis=1.25)
+dev.off()
+
+pdf(file="R3.pdf",height=6,width=10)
+plot(time[-1],returns[,4],type='l',xlab="Date",ylab=names(returns)[4],bty="n",cex.lab=1.25,cex.axis=1.25)
+dev.off()
+
+pdf(file="R4.pdf",height=6,width=10)
+plot(time[-1],returns[,5],type='l',xlab="Date",ylab=names(returns)[5],bty="n",cex.lab=1.25,cex.axis=1.25)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #run wbs
-set.seed(75422)
+set.seed(440)
 source("C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
 Rcpp::sourceCpp('C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
 
-source("C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
-Rcpp::sourceCpp('C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
-
-
+# source("C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
+# Rcpp::sourceCpp('C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
+# 
+# 
 
 intervals<-getIntervals(1:nrow(returns),700)
 intervals<-rbind(intervals,c(1,1259))
@@ -43,14 +80,39 @@ depth="spat"
 depth="mahal"
 dat<-returns[,2:5]
 
-cp1<-WBS(intervals ,1,1259,thresh,dat,depth)
-cp<-cp1 %>% getScwartzCriterias(data=dat,depth=depth) %>% applySCH(N=nrow(dat),alpha=.75)
-cp
-time[sort(cp)]
+cp1m7<-WBS(intervals ,1,1259,thresh,dat,"mahal75")
+cpm7<-cp1m7 %>% getScwartzCriterias(data=dat,depth="mahal75") %>% applySCH(N=nrow(dat),alpha=0.9)
+cpm7
+time[sort(cpm7)]
+
+cp1SP<-WBS(intervals ,1,1259,thresh,dat,"spat")
+cpSP<-cp1SP %>% getScwartzCriterias(data=dat,depth="spat") %>% applySCH(N=nrow(dat),alpha=0.9)
+cpSP
+time[sort(cpSP)]
 
 
-# source("C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT CP KW.R")
-# Rcpp::sourceCpp('C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT_CPP.cpp')
+cp1hs<-WBS(intervals ,1,1259,thresh,dat,"hs")
+cphs<-cp1hs %>% getScwartzCriterias(data=dat,depth="hs") %>% applySCH(N=nrow(dat),alpha=0.9)
+cphs
+time[sort(cphs)]
+
+
+
+cp1m<-WBS(intervals ,1,1259,thresh,dat,"mahal")
+cpm<-cp1m %>% getScwartzCriterias(data=dat,depth="mahal") %>% applySCH(N=nrow(dat),alpha=0.9)
+cpm
+time[sort(cpm)]
+
+cphs
+cpSP
+cpm
+cpm7
+
+cp1=cp1m
+cp=cpm
+
+cp1=cp1SP
+cp=cpSP
 
 
 depthsH<-depth.halfspace(dat,dat)
@@ -58,14 +120,27 @@ depthsS<-depth.spatial(dat,dat)
 depthsM<-depth.Mahalanobis(dat,dat)
 depthsM75<-depth.Mahalanobis(dat,dat,"MCD")
 
+
+# > getBestC(hs,C)
+# [1] 0.2381618
+# > getBestC(sp,C)
+# [1] 0.1599214
+# > getBestC(m75,C)
+# [1] 0.1442733
+# > getBestC(m,C)
+# [1] 0.1912176
+
+
+C=0.24
+
 ranksH<-rank(depthsH)
-cp_PELTH<-PELT_T(ranksH,1.5*log(length(ranksH)))
+cp_PELTH<-PELT_T(ranksH,C*(length(ranksH))^.5+3.74)
 ranksS<-rank(depthsS)
-cp_PELTS<-PELT_T(ranksS,1.5*log(length(ranksS)))
+cp_PELTS<-PELT_T(ranksS,C*(length(ranksH))^.5+3.74)
 ranksM<-rank(depthsM)
-cp_PELTM<-PELT_T(ranksM,1.5*log(length(ranksM)))
+cp_PELTM<-PELT_T(ranksM,C*(length(ranksH))^.5+3.74)
 ranksM75<-rank(depthsM75)
-cp_PELTM75<-PELT_T(ranksM75,1.5*log(length(ranksM75)))
+cp_PELTM75<-PELT_T(ranksM75,C*(length(ranksH))^.5+3.74)
 
 time[cp_PELTH]
 time[cp_PELTS]
@@ -108,29 +183,32 @@ dev.off()
 
 ########
 a<-c("#cc0066","#cc6600","#003300")
+coll=colors()[617]
+coll2=colors()[641]
+a<-c(coll2,coll)
 par(mfrow=c(1,1),mgp=c(2.5,1,0))
 
-pdf(file="R1_BOTH.pdf",height=6,width=10)
-plot(time[-1],returns[,2],type='l',xlab="Date",ylab=names(returns)[2],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp_PELT,1],col="#cc6600",lwd=2)
+pdf(file="R1_BOTH.pdf",height=6,width=17)
+plot(time[-1],returns[,2],type='l',xlab="Date",ylab=names(returns)[2],bty="n",cex.lab=1.75,cex.axis=1.75)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=2)
 abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
 dev.off()
 
-pdf(file="R2_BOTH.pdf",height=6,width=10)
-plot(time[-1],returns[,3],type='l',xlab="Date",ylab=names(returns)[3],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp_PELT,1],col="#cc6600",lwd=2)
+pdf(file="R2_BOTH.pdf",height=6,width=17)
+plot(time[-1],returns[,3],type='l',xlab="Date",ylab=names(returns)[3],bty="n",cex.lab=1.75,cex.axis=1.75)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=2)
 abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
 dev.off()
 
-pdf(file="R3_BOTH.pdf",height=6,width=10)
-plot(time[-1],returns[,4],type='l',xlab="Date",ylab=names(returns)[4],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp_PELT,1],col="#cc6600",lwd=2)
+pdf(file="R3_BOTH.pdf",height=6,width=17)
+plot(time[-1],returns[,4],type='l',xlab="Date",ylab=names(returns)[4],bty="n",cex.lab=1.75,cex.axis=1.75)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=2)
 abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
 dev.off()
 
-pdf(file="R4_BOTH.pdf",height=6,width=10)
-plot(time[-1],returns[,5],type='l',xlab="Date",ylab=names(returns)[5],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp_PELT,1],col="#cc6600",lwd=2,lty=1)
+pdf(file="R4_BOTH.pdf",height=6,width=17)
+plot(time[-1],returns[,5],type='l',xlab="Date",ylab=names(returns)[5],bty="n",cex.lab=1.75,cex.axis=1.75)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=2,lty=1)
 abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
 dev.off()
 
@@ -165,7 +243,7 @@ abline(v=1:length(cp))
 time[sort(cp)]
 cp1<-cp1[order(cp1[,2],decreasing = T),]
 cp1[1:length(cp),]
-
+time[order(cp1[,2],decreasing = T)]
 
 ##PELT
 
@@ -193,7 +271,7 @@ matpoints(ovT,col=a[1],bg=a[1],cex=1.2,pch=2)
 
 par(mfrow=c(1,1))
 par(mfrow=c(1,1),mgp=c(2.5,1,0))
-pdf(file="Cov_OT_BOTH.pdf",height=10,width=10)
+pdf(file="Cov_OT_BOTH.pdf",height=7,width=10)
 matplot(ovT_PELT,type='l',lwd=2,ylab="Parameter Value",xlab="Time Period",lty=1,bty="n",col=a[2],cex.lab=1.5,cax.axis=1.6)
 matlines(ovT,col=a[1],lty=2,lwd=2)
 dev.off()
@@ -208,7 +286,7 @@ cp1_PELT[1:length(cp_PELT),]
 
 
 
-depth="mahal"
+depth="hs"
 
 
 #solution path
@@ -257,4 +335,84 @@ BH_Corr(cp1[1:length(cp),])
 Bon_Corr(cp1[1:length(cp),])
 
 
+##GARCH
+library(rmgarch)
+pacf(returns[,2])
+pacf(returns[,3])
+pacf(returns[,4])
+pacf(returns[,5])
+acf(returns[,2])
+acf(returns[,3])
+acf(returns[,4])
+acf(returns[,5])
+tsObj=ts(returns[,2:5])
+plot(tsObj)
+model=VAR(returns[,2:5])
+serial.test(model)
+arch.test(model)
+stability(model)
 
+resid=residuals(model)
+# data.frame(resid)
+# plot(data.frame(resid))
+
+
+resid=cbind(returns[2:1259,1],resid)
+# 
+# 
+# 
+# 
+# #run wbs
+set.seed(75422)
+# source("C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
+# Rcpp::sourceCpp('C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
+# 
+# source("C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
+# Rcpp::sourceCpp('C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
+
+
+
+par(mfrow=c(2,2))
+dat<-resid[,2:5]
+plot(resid[,1],resid[,2],type='l')
+plot(resid[,1],resid[,3],type='l')
+plot(resid[,1],resid[,4],type='l')
+plot(resid[,1],resid[,5],type='l')
+
+intervals<-getIntervals(1:nrow(resid),700)
+intervals<-rbind(intervals,c(1,1258))
+# cdf(1.35)
+thresh<-1.22
+# 18Jul2007 5Sep2008  8Dec2008  1May2009  25Aug2009 20Apr2010 8Jul2010  25Jul2011
+
+depth="hs"
+depth="mahal75"
+depth="spat"
+depth="mahal"
+
+cp1<-WBS(intervals ,1,1258,thresh,dat,depth)
+cp<-cp1 %>% getScwartzCriterias(data=dat,depth=depth) %>% applySCH(N=nrow(dat),alpha=.9)
+cp
+time[sort(cp)+1]
+
+
+
+depthsH<-depth.halfspace(dat,dat)
+depthsS<-depth.spatial(dat,dat)
+depthsM<-depth.Mahalanobis(dat,dat)
+depthsM75<-depth.Mahalanobis(dat,dat,"MCD")
+
+ranksH<-rank(depthsH)
+cp_PELTH<-PELT_T(ranksH,1.5*log(length(ranksH)))
+ranksS<-rank(depthsS)
+cp_PELTS<-PELT_T(ranksS,C*(length(ranksH))^.5+3.74)
+ranksM<-rank(depthsM)
+cp_PELTM<-PELT_T(ranksM,1.5*log(length(ranksM)))
+ranksM75<-rank(depthsM75)
+cp_PELTM75<-PELT_T(ranksM75,1.5*log(length(ranksM75)))
+
+time[cp_PELTH+1]
+time[cp_PELTS+1]
+time[cp_PELTM+1]
+time[cp_PELTM75+1]
+# 
