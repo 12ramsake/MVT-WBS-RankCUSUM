@@ -1,12 +1,7 @@
 
 
-##change-point simulation for wang paper
+##change-point simulation for wang2021 paper
 
-
-
-#Seed
-# set.seed(746383)
-#packages
 library(mvtnorm)
 library(fMultivar)
 library(MASS)
@@ -18,18 +13,16 @@ library(doParallel)
 library(doRNG)
 
 #results dirrectory
-dirr<- "/u/k3ramsay/ResearchDocuments/output/MV_CP_PAPER_WANG_METHOD/"
+dirr<- ""
 setwd(dirr)
 
 
 #simulation parameters
 #N
 Ns<-c(1000,2500,5000)
-Ns=1000
 
 #simulation size, num repetitions
 sim.size=100
-
 mod=100
 
 
@@ -66,9 +59,6 @@ for(i1 in 1:length(Ns)){
     }
   }
 }
-
-
-
 
 
 
@@ -119,7 +109,7 @@ names(distributions)=c("Normal","Cauchy","Skew Normal")
 
 
 #run simulation
-for(i in 5:9){
+for(i in 1:108){
   
   #set paramters
   params<-paramterIndices[i,]
