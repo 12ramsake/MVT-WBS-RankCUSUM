@@ -177,9 +177,10 @@ for(i in 1:36){
   numInt=floor(log(Ns[params[1]]))*mod
   dName=names(distributions1)[params[3]]
   
-  fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
-  fileName_s<-paste(dirr,fileName,".Rda",sep="")
-  load(fileName_s)
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
+  fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
+  fileName_OC<-paste(dirr,fileName_OC,".Rda",sep="")
+  load(fileName_OC)
   
   
   
@@ -192,7 +193,7 @@ for(i in 1:36){
   m75<-cbind(m75,vals[[4]])
   
   
-  
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_2/"
   fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
   fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
   load(fileName_NC)
@@ -258,10 +259,13 @@ for(i in 37:numUniqueRuns){
   numInt=floor(log(Ns[params[1]]))*mod
   dName=names(distributions1)[params[3]]
   
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
   fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
-  fileName_OC<-paste(dirr,fileName,".Rda",sep="")
+  fileName_OC<-paste(dirr,fileName_OC,".Rda",sep="")
+  
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_2/"
   fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
-  fileName_NC<-paste(dirr,fileName,".Rda",sep="")
+  fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
   
   load(fileName_OC)
   m_oc<-cbind(m_oc,getDist(alpha,F))
@@ -343,7 +347,7 @@ thetas <- list(c(.333, .666),
 
 ##d= 2,3,5,10
 ds = c(5)
-thresh=1.358
+thresh=1
 d2s = c(4, 3, 2, 1)
 
 distributions1 = 1
@@ -385,7 +389,7 @@ for(i in 1:nrow(paramterIndices)){
   dName = "Normal"
   # distr = distributions[[1]]
   
-  
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_3/"
   fileName <-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_", "thresh", thresh,"_d2_", d2, "_WBS_simsize_", sim.size, "_all", sep = "")
   fileName1 <- paste(dirr, fileName, ".Rda", sep = "")
   load(fileName1)

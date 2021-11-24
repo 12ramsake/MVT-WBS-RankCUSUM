@@ -4,8 +4,8 @@ library(MASS)
 library(xtable)
 
 
-#results dirrectory
-dirr<-""
+#results directory
+dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/"
 setwd(dirr)
 
 
@@ -32,7 +32,7 @@ ds=c(2,3,5,10)
 
 
 #95 of BB dont dchange for bonff
-thresh<-1.22
+thresh<-1
 
 distributions1=1:3
 names(distributions1)<-c("Normal", "Cauchy", "Skew Normal")
@@ -236,6 +236,7 @@ for(i in 1:36){
   numInt=floor(log(Ns[params[1]]))*mod
   dName=names(distributions1)[params[3]]
   
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
   fileName_s<-paste(dirr,fileName,".Rda",sep="")
   load(fileName_s)
@@ -249,7 +250,7 @@ for(i in 1:36){
   sp<-rbind(sp,vals[2,])
   mh<-rbind(mh,vals[3,])
   mh75<-rbind(mh75,vals[4,])
-  
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_2/"
   fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
   fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
   load(fileName_NC)
@@ -336,14 +337,14 @@ for(i in 37:108){
   
   
   
-  
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
   alphas=seq(.0001,2,length.out = 100)
   fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
   fileName_OC<-paste(dirr,fileName_OC,".Rda",sep="")
   load(fileName_OC)
   mh_oc=rbind( mh_oc,sqrt(getMSE(alphas,F)))
   
-  
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_2/"
   fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
   fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
   load(fileName_NC)

@@ -280,6 +280,7 @@ for(i in 1:36){
   numInt=floor(log(Ns[params[1]]))*mod
   dName=names(distributions1)[params[3]]
   if(d==10&&distr==1){
+    dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
     fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
     fileName_OC<-paste(dirr,fileName_OC,'.Rda',sep="")
 
@@ -414,7 +415,7 @@ for(i in 1:36){
   numInt=floor(log(Ns[params[1]]))*100
   dName=names(distributions1)[params[3]]
   
-
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
   fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,".Rda",sep="")
   fileName_OC<-paste(dirr,fileName_OC,sep="")
   load(fileName_OC)
@@ -432,6 +433,7 @@ for(i in 1:36){
   cols=c(cols,rep( params[3],dim(vals[[1]])[2]))
   dimss=c(dimss,rep( params[4],dim(vals[[1]])[2]))
   
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_2/"
   fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,".Rda",sep="")
   fileName_NC<-paste(dirr,fileName_NC,sep="")
   load(fileName_NC)
@@ -494,9 +496,12 @@ for(i in 37:numUniqueRuns){
   numInt=floor(log(Ns[params[1]]))*mod
   dName=names(distributions1)[params[3]]
   
+  
   fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
   fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_1/"
   fileName_OC<-paste(dirr,fileName_OC,'.Rda',sep="")
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS_SIM/Scen_2/"
   fileName_NC<-paste(dirr,fileName_NC,'.Rda',sep="")
   
   load(fileName_OC)
