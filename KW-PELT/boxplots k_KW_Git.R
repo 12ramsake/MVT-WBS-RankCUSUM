@@ -149,6 +149,7 @@ for(i in 1:36){
   dName=names(distributions1)[params[3]]
   
   if(d==10&&distr==1){
+    dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_1/"
     fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"OC_PELT_ranks_simsize_",sim.size,sep="")
     fileName1<-paste(dirr,fileName,".Rda",sep="")
     load(fileName1)
@@ -278,6 +279,7 @@ for(i in 1:36){
   dName=names(distributions1)[params[3]]
   
   # if(d==10&&distr==2){
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_1/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"OC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -340,6 +342,7 @@ for(i in 37:72){
   dName=names(distributions1)[params[3]]
   
   # if(d==10&&distr==2){
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_1/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"OC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -462,7 +465,7 @@ sp<-NULL
 m<-NULL
 m75<-NULL
 cols=NULL
-
+dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_2/"
 for(i in 1:36){
   
   params<-paramterIndices[i,]

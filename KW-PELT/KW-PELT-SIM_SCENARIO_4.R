@@ -224,54 +224,25 @@ for(i in 1:numUniqueRuns){
 
 
 
-
-thetas<-list(.5)
+sim.size=100
 
 ds=c(5,10,50,100,250,500)
-distributions1=1
-names(distributions1)<-c("Normal")
-##Create Parameter Vector
 
-numUniqueRuns<-length(Ns)*length(thetas)*length(ds)*length(distributions1)
 
-paramterIndices<-matrix(0,ncol=4,nrow=numUniqueRuns)
-curr=0
-for(i1 in 1:length(Ns)){
-  for(i2 in 1:length(thetas)){
-    for(i3 in 1:length(distributions1)){
-      for(i4 in 1:length(ds)){
-        curr=curr+1
-        paramterIndices[curr,]=c(i1,i2,i3,i4)
-      }
-    }
-  }
-}
-
+theta<-0.5
 dim_of_change=5
-#simulation functions
-distributions<-list(normals)
-names(distributions)=c("Normal")
+N=1000
+dName="Normal"
+distr=1
 
-for(i in 1:numUniqueRuns){
+
+for(d in ds){
   
-  params<-paramterIndices[i,]
-  N=Ns[params[1]]
-  theta=thetas[[params[2]]]
-  distr=distributions1[[params[3]]]
-  d=ds[params[4]]
   
-  dName=names(distributions1)[params[3]]
   
-  normalMaster<-function(n,d,sigmaSq){mvtnorm::rmvnorm(n,sigma=diag(sigmaSq*rep(1,d)))}
-  
-  norm1<-function(n,d){normalMaster(n,d,1)}
+  norm1<-function(n,d){mvtnorm::rmvnorm(n,sigma=diag(rep(1,d)))}
   norm2<-function(n,d){mvtnorm::rmvnorm(n,sigma=diag(c(2.5*rep(1,dim_of_change),rep(1,d-dim_of_change))))}
-  
-  normals<-list(norm1,norm2)
-  
-  
-  
-  distr=distributions[[distr]]
+  distr=list(norm1,norm2)
   
   
   #run one repetition
@@ -335,6 +306,8 @@ for(i in 1:numUniqueRuns){
   
   registerDoParallel(cl) 
   registerDoRNG(seed = 440)
+  
+  
   depthsSpat=try({foreach(i=1:sim.size,.packages= pkgs) %dopar% {runSim(N,theta,distr,d,depth="spat")}})
   
   errorsp=inherits(depthsSpat, "try-error")
@@ -347,7 +320,7 @@ for(i in 1:numUniqueRuns){
   
   
   
-  fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_","HD3_dimchange_",dim_of_change,"_Depths_simsize_",sim.size,sep="")
+  fileName<-paste0(N,"_",length(theta),"_Normal_d_",d,"_","HD3_dimchange_",dim_of_change,"_Depths_simsize_",sim.size,sep="")
   
   
   fileName1<-paste(dirr,fileName,".Rda",sep="")
@@ -356,6 +329,7 @@ for(i in 1:numUniqueRuns){
   
   closeAllConnections()
   print(dim_of_change)
+  print(d)
   
 }
 
@@ -363,27 +337,26 @@ for(i in 1:numUniqueRuns){
 
 ################PELT
 constant=0.18
-for(i in 1:numUniqueRuns){
-  
-  params<-paramterIndices[i,]
-  N=Ns[params[1]]
-  
-  beta=constant*sqrt(N)+3.74
-  
-  
-  theta=thetas[[params[2]]]
-  distr=distributions1[[params[3]]]
-  d=ds[params[4]]
-  
-  dName=names(distributions1)[params[3]]
-  distr=distributions[[distr]]
-  
-  
-  
-  
-  fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_","HD3_dimchange_",dim_of_change,"_Depths_simsize_",sim.size,sep="")
+sim.size=100
+
+ds=c(5,10,50,100,250,500)
+
+
+theta<-0.5
+dim_of_change=5
+N=1000
+dName="Normal"
+distr=1
+
+beta=constant*sqrt(N)+3.74
+
+
+for(d in ds){
   
   
+  
+  
+  fileName<-paste0(N,"_",length(theta),"_Normal_d_",d,"_","HD3_dimchange_",dim_of_change,"_Depths_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
   
@@ -392,17 +365,13 @@ for(i in 1:numUniqueRuns){
   ranksSpat<-lapply(depthsSpat,rank)
   
   
-  resultsSpat<-lapply(ranksSpat, PELT_T,beta=beta)
+  resultsSpat<-mclapply(ranksSpat, PELT_T,beta=beta, mc.cores =  no_cores)
   
-  fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_HD3_dimchange_",dim_of_change,"_constant_",constant,"_PELT_ranks_simsize_",sim.size,sep="")
+  fileName<-paste0(N,"_",length(theta),"_Normal_d_",d,"_HD3_dimchange_",dim_of_change,"_constant_",constant,"_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr2,fileName,".Rda",sep="")
   save(resultsSpat,file=fileName1)
   
   closeAllConnections()
 }
-
-
-
-
 
 

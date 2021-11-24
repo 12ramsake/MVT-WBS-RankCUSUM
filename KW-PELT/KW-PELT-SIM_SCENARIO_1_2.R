@@ -16,8 +16,8 @@ library(RcppArmadillo)
 
 
 #results directory
-dirr<-"/u/k3ramsay/ResearchDocuments/output/KW_PELT_SIMULATION/Scen_2/"
-dirr2="/u/k3ramsay/ResearchDocuments/output/KW_PELT_SIMULATION/Scen_2/"
+dirr<-""
+dirr2=""
 #PELT results , after running pelt on depths
 setwd(dirr)
 
@@ -297,7 +297,6 @@ for(i in 1:numUniqueRuns){
     
     
     
-    
     fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_","OC_Depths_simsize_",sim.size,sep="")
     
     
@@ -324,7 +323,7 @@ for(i in 1:numUniqueRuns){
     save(resultsHS,resultsSpat,resultsMahal,resultsMahal75,file=fileName1)
     
     closeAllConnections()
-    print(i/numUniqueRuns/length(constants)+(which(constant==constants)-1)/length(constants))
+    print(i/numUniqueRuns+(which(constant==constants)-1)/length(constants)/numUniqueRuns)
 
   }
 }

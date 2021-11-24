@@ -8,7 +8,7 @@ library(xtable)
 library(latex2exp)
 
 
-dirr<-""
+dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/"
 setwd(dirr)
 constant=0.18
 Ns<-c(1000,2500,5000)
@@ -119,6 +119,7 @@ for(i in 1:108){
   d=ds[params[4]]
   
   dName=names(distributions1)[params[3]]
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_1/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"OC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -194,6 +195,7 @@ sp<-NULL
 m<-NULL
 m75<-NULL
 
+
 for(i in 37:72){
   
   params<-paramterIndices[i,]
@@ -203,6 +205,7 @@ for(i in 37:72){
   d=ds[params[4]]
   
   dName=names(distributions1)[params[3]]
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_1/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"OC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -294,6 +297,7 @@ for(i in 37:72){
   d=ds[params[4]]
   
   dName=names(distributions1)[params[3]]
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_1/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"OC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -390,6 +394,7 @@ for(i in 1:36){
   d=ds[params[4]]
   
   dName=names(distributions1)[params[3]]
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_2/"
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"NC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -487,6 +492,8 @@ for(i in 37:72){
   d=ds[params[4]]
   
   dName=names(distributions1)[params[3]]
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_2/"
+  
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"NC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -577,6 +584,8 @@ for(i in 37:72){
   d=ds[params[4]]
   
   dName=names(distributions1)[params[3]]
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_2/"
+  
   fileName<-paste0(N,"_",length(theta),"_",dName,"_",d,"_constant_C1_",constant,"NC_PELT_ranks_simsize_",sim.size,sep="")
   fileName1<-paste(dirr,fileName,".Rda",sep="")
   load(fileName1)
@@ -652,8 +661,9 @@ dev.off()
 
 ########SUBMATRIX STUFF
 #where are these results stored?
-dirr<-""
-setwd(dirr)
+
+
+dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/KW_PELT_SIMULATION/Scen_3/"
 Ns <- c(1000)
 sim.size = 100
 thetas <- list(c(.333, .666),
