@@ -60,13 +60,10 @@ dev.off()
 
 #run wbs
 set.seed(440)
-source("C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
-Rcpp::sourceCpp('C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
+source("WBS_function_June.R")
+Rcpp::sourceCpp('PELT_CPP.cpp')
 
-# source("C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
-# Rcpp::sourceCpp('C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
-# 
-# 
+
 
 intervals<-getIntervals(1:nrow(returns),700)
 intervals<-rbind(intervals,c(1,1259))
@@ -358,18 +355,9 @@ resid=residuals(model)
 
 
 resid=cbind(returns[2:1259,1],resid)
-# 
-# 
-# 
-# 
-# #run wbs
-set.seed(75422)
-# source("C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
-# Rcpp::sourceCpp('C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
-# 
-# source("C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/WBS Codes/WBS_function_June.R")
-# Rcpp::sourceCpp('C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/PELT Codes/PELT_CPP.cpp')
 
+
+set.seed(75422)
 
 
 par(mfrow=c(2,2))
@@ -382,7 +370,7 @@ plot(resid[,1],resid[,5],type='l')
 intervals<-getIntervals(1:nrow(resid),700)
 intervals<-rbind(intervals,c(1,1258))
 # cdf(1.35)
-thresh<-1.22
+thresh<-1
 # 18Jul2007 5Sep2008  8Dec2008  1May2009  25Aug2009 20Apr2010 8Jul2010  25Jul2011
 
 depth="hs"
@@ -403,13 +391,13 @@ depthsM<-depth.Mahalanobis(dat,dat)
 depthsM75<-depth.Mahalanobis(dat,dat,"MCD")
 
 ranksH<-rank(depthsH)
-cp_PELTH<-PELT_T(ranksH,1.5*log(length(ranksH)))
+cp_PELTH<-PELT_T(ranksH,C*(length(ranksH))^.5+3.74)
 ranksS<-rank(depthsS)
-cp_PELTS<-PELT_T(ranksS,C*(length(ranksH))^.5+3.74)
+cp_PELTS<-PELT_T(ranksS,C*(length(ranksS))^.5+3.74)
 ranksM<-rank(depthsM)
-cp_PELTM<-PELT_T(ranksM,1.5*log(length(ranksM)))
+cp_PELTM<-PELT_T(ranksM,C*(length(ranksM))^.5+3.74)
 ranksM75<-rank(depthsM75)
-cp_PELTM75<-PELT_T(ranksM75,1.5*log(length(ranksM75)))
+cp_PELTM75<-PELT_T(ranksM75,C*(length(ranksM75))^.5+3.74)
 
 time[cp_PELTH+1]
 time[cp_PELTS+1]
