@@ -36,7 +36,7 @@ thresh=1
 
 d2s = c(4, 3, 2, 1)
 
-
+ds=5
 ##Create Parameter Vector
 
 numUniqueRuns <- length(thetas) * length(d2s)
