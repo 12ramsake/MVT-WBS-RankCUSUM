@@ -42,7 +42,7 @@ for(i1 in 1:length(Ns)){
 
 
 
-distributions<-list(1:3)
+distributions<-list(1,2,3)
 names(distributions)=c("Normal","Cauchy","Skew Normal")
 
 
@@ -284,7 +284,7 @@ for(i in 1:36){
     fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
     fileName_OC<-paste(dirr,fileName_OC,'.Rda',sep="")
 
-    
+    load(fileName_OC)
     
     
     alphas=0.9
