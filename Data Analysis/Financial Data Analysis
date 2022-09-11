@@ -6,14 +6,17 @@ library(vars)
 dirr<- ""
 # dirr<- "C:/Users/k3ramsay/OneDrive/Documents/research/PhD Thesis/Change Point R Codes/Financial Data Analysis"
 setwd(dirr)
-
-BASF<-read.csv(paste(dirr,"/BASFY.csv",sep=""))$Return
-Total<-as.numeric(read.csv(paste(dirr,"/TOT.csv",sep=""))$Return)
-Siemens<-read.csv(paste(dirr,"/SIEGY.csv",sep=""))$Return
-Sanofi<-read.csv(paste(dirr,"/SNY.csv",sep=""))$Return
-time=read.csv(paste(dirr,"/SNY.csv",sep=""))$Date %>% as.character() %>% as.date(order="ymd")
+list.files()
+BASF<-read.csv(paste(dirr,"BASFY.csv",sep=""))$Return
+Total<-as.numeric(read.csv(paste(dirr,"TOT.csv",sep=""))$Return)
+Siemens<-read.csv(paste(dirr,"SIEGY.csv",sep=""))$Return
+Sanofi<-read.csv(paste(dirr,"SNY.csv",sep=""))$Return
+time=read.csv(paste(dirr,"SNY.csv",sep=""))$Date %>% as.character() %>% as.date(order="ymd")
 returns<-data.frame(cbind(time,BASF,Total,Siemens,Sanofi))
 returns<-returns[-1,]
+
+dim(returns)
+length(time)
 
 
 par(mfrow=c(2,2))
@@ -59,11 +62,11 @@ dev.off()
 
 
 #run wbs
-set.seed(440)
+
 source("WBS_function_June.R")
 Rcpp::sourceCpp('PELT_CPP.cpp')
 
-
+set.seed(440)
 
 intervals<-getIntervals(1:nrow(returns),700)
 intervals<-rbind(intervals,c(1,1259))
@@ -118,16 +121,6 @@ depthsM<-depth.Mahalanobis(dat,dat)
 depthsM75<-depth.Mahalanobis(dat,dat,"MCD")
 
 
-# > getBestC(hs,C)
-# [1] 0.2381618
-# > getBestC(sp,C)
-# [1] 0.1599214
-# > getBestC(m75,C)
-# [1] 0.1442733
-# > getBestC(m,C)
-# [1] 0.1912176
-
-
 C=0.24
 
 ranksH<-rank(depthsH)
@@ -151,62 +144,68 @@ cp_PELT
 
 # beepr::beep()
 ########
-a<-c("#cc0066","#cc6600","#003300")
-par(mfrow=c(1,1),mgp=c(2.5,1,0))
 
-pdf(file="R1_S.pdf",height=6,width=10)
-plot(time[-1],returns[,2],type='l',xlab="Date",ylab=names(returns)[2],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp,1],col="#cc6600",lwd=2)
-dev.off()
-
-pdf(file="R2_S.pdf",height=6,width=10)
-plot(time[-1],returns[,3],type='l',xlab="Date",ylab=names(returns)[3],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp,1],col="#cc6600",lwd=2)
-dev.off()
-
-pdf(file="R3_S.pdf",height=6,width=10)
-plot(time[-1],returns[,4],type='l',xlab="Date",ylab=names(returns)[4],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp,1],col="#cc6600",lwd=2)
-dev.off()
-
-pdf(file="R4_S.pdf",height=6,width=10)
-plot(time[-1],returns[,5],type='l',xlab="Date",ylab=names(returns)[5],bty="n",cex.lab=1.25,cex.axis=1.25)
-abline(v=returns[cp,1],col="#cc6600",lwd=2)
-dev.off()
+# par(mfrow=c(1,1),mgp=c(2.5,1,0))
+# 
+# pdf(file="R1_S.pdf",height=6,width=10)
+# plot(time[-1],returns[,2],type='l',xlab="Date",ylab=names(returns)[2],bty="n",cex.lab=1.25,cex.axis=1.25)
+# abline(v=returns[cp,1],col="#cc6600",lwd=2)
+# dev.off()
+# 
+# pdf(file="R2_S.pdf",height=6,width=10)
+# plot(time[-1],returns[,3],type='l',xlab="Date",ylab=names(returns)[3],bty="n",cex.lab=1.25,cex.axis=1.25)
+# abline(v=returns[cp,1],col="#cc6600",lwd=2)
+# dev.off()
+# 
+# pdf(file="R3_S.pdf",height=6,width=10)
+# plot(time[-1],returns[,4],type='l',xlab="Date",ylab=names(returns)[4],bty="n",cex.lab=1.25,cex.axis=1.25)
+# abline(v=returns[cp,1],col="#cc6600",lwd=2)
+# dev.off()
+# 
+# pdf(file="R4_S.pdf",height=6,width=10)
+# plot(time[-1],returns[,5],type='l',xlab="Date",ylab=names(returns)[5],bty="n",cex.lab=1.25,cex.axis=1.25)
+# abline(v=returns[cp,1],col="#cc6600",lwd=2)
+# dev.off()
 
 
 
 #PELT
 
-########
+viridis::magma(10)
 a<-c("#cc0066","#cc6600","#003300")
-coll=colors()[617]
-coll2=colors()[641]
-a<-c(coll2,coll)
+a<-c(viridis::magma(10)[2],viridis::magma(10)[7])
+a<-rainbow(7)[c(3,7)]
+a=c('#a12f10','#0b1fb8')
+# ########
+# a<-c("#cc0066","#cc6600","#003300")
+# coll=colors()[617]
+# coll2=colors()[641]
+# a<-c(coll2,coll)
+
 par(mfrow=c(1,1),mgp=c(2.5,1,0))
 
 pdf(file="R1_BOTH.pdf",height=6,width=17)
 plot(time[-1],returns[,2],type='l',xlab="Date",ylab=names(returns)[2],bty="n",cex.lab=1.75,cex.axis=1.75)
-abline(v=returns[cp_PELT,1],col=a[2],lwd=2)
-abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=4)
+abline(v=returns[cp,1],col=a[1],lwd=4,lty=4)
 dev.off()
 
 pdf(file="R2_BOTH.pdf",height=6,width=17)
 plot(time[-1],returns[,3],type='l',xlab="Date",ylab=names(returns)[3],bty="n",cex.lab=1.75,cex.axis=1.75)
-abline(v=returns[cp_PELT,1],col=a[2],lwd=2)
-abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=4)
+abline(v=returns[cp,1],col=a[1],lwd=4,lty=4)
 dev.off()
 
 pdf(file="R3_BOTH.pdf",height=6,width=17)
 plot(time[-1],returns[,4],type='l',xlab="Date",ylab=names(returns)[4],bty="n",cex.lab=1.75,cex.axis=1.75)
-abline(v=returns[cp_PELT,1],col=a[2],lwd=2)
-abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=4)
+abline(v=returns[cp,1],col=a[1],lwd=4,lty=4)
 dev.off()
 
 pdf(file="R4_BOTH.pdf",height=6,width=17)
 plot(time[-1],returns[,5],type='l',xlab="Date",ylab=names(returns)[5],bty="n",cex.lab=1.75,cex.axis=1.75)
-abline(v=returns[cp_PELT,1],col=a[2],lwd=2,lty=1)
-abline(v=returns[cp,1],col=a[1],lwd=2,lty=2)
+abline(v=returns[cp_PELT,1],col=a[2],lwd=4)
+abline(v=returns[cp,1],col=a[1],lwd=4,lty=4)
 dev.off()
 
 
@@ -272,6 +271,8 @@ pdf(file="Cov_OT_BOTH.pdf",height=7,width=10)
 matplot(ovT_PELT,type='l',lwd=2,ylab="Parameter Value",xlab="Time Period",lty=1,bty="n",col=a[2],cex.lab=1.5,cax.axis=1.6)
 matlines(ovT,col=a[1],lty=2,lwd=2)
 dev.off()
+matplot(ovT_PELT,type='l',lwd=2,ylab="Parameter Value",xlab="Time Period",lty=1,bty="n",col=a[2],cex.lab=1.5,cax.axis=1.6)
+matlines(ovT,col=a[1],lty=2,lwd=2)
 abline(v=1:length(cp_PELT),lty=2)
 matplot(ovT_PELT,type='l',ylim=c(0,40))
 abline(v=1:length(cp_PELT))
