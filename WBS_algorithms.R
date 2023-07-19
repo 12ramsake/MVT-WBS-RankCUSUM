@@ -177,6 +177,34 @@ WBS <- function(intervals, s, e, threshold, data,depth) {
     return(NULL)
 }
 
+
+
+
+DWBS = function(data,
+                N,
+                d,
+                numInt = 10,
+                thresh = 1.3584,
+                depth = "hs") {
+  s_test <- 1
+  e_test <- nrow(data)
+  
+  #get intervals
+  intervals <- getIntervals(1:e_test, numInt)
+  
+  #runWBS
+  cp <- WBS(intervals , 2, e_test, thresh, data,depth)
+  
+  return(cp)
+}
+
+
+
+
+
+
+
+
 #get depths
 #make obs univariate
 getDepths <- function(data, depth) {
@@ -200,6 +228,9 @@ getDepths <- function(data, depth) {
   return(ts)
 }
 
+
+
+
 #schwartz criteria for choosing the threshold
 #returns all the different models which are the selected change-points and the sigmahatsquared value
 #(see paper, section on choosing threshold)
@@ -209,17 +240,17 @@ getScwartzCriterias <- function(cp, data, depth) {
   
   
   
-  sSic <- getsSic(NULL, data, depth)
+  sqhat <- getsqhat(NULL, data, depth)
   
-  abc <- list("cp" = NULL, "sigSq" = sSic)
+  abc <- list("cp" = NULL, "sigSq" = sqhat)
   
   models = list(abc)
   
   for (i in 1:length(cp)) {
-    sSic <- getsSic(cp[1:i], data, depth)
+    sqhat <- getsqhat(cp[1:i], data, depth)
     
     abc$cp = cp[1:i]
-    abc$sigSq = sSic
+    abc$sigSq = sqhat
     
     models = append(models, list(abc))
   }
@@ -228,7 +259,7 @@ getScwartzCriterias <- function(cp, data, depth) {
   
 }
 
-getsSic <- function(cp, data, depth) {
+getsqhat <- function(cp, data, depth) {
   depths <- rank(getDepths(data, depth), ties.method = "random")
   # depths<-getDepths(data,depth)
   
@@ -261,23 +292,45 @@ getsSic <- function(cp, data, depth) {
   
 }
 
-DWBS = function(data,
-                    N,
-                    d,
-                    numInt = 10,
-                    thresh = 1.3584,
-                    depth = "hs") {
-  s_test <- 1
-  e_test <- nrow(data)
+#get indidvidual criteria for a set of cp
+getsSic2<-function(cp,sighatSq,alpha,N){
   
-  #get intervals
-  intervals <- getIntervals(1:e_test, numInt)
   
-  #runWBS
-  cp <- WBS(intervals , 2, e_test, thresh, data,depth)
+  #if at least 1 cp
+  if(length(cp)>=1){
+    
+    sSic<-(N/2)*log(sighatSq)+length(cp)*(log(N))^alpha
+  }
+  else{
+    sSic<-(N/2)*log(sighatSq)
+  }
   
-  return(cp)
+  return(sSic)
 }
+
+
+
+applySCH<-function(models,alpha,N){
+
+  #get SIC for all amounts of cp
+  sSic<-getsSic2(models[[1]]$cp,models[[1]]$sigSq,alpha,N)
+  
+  
+  if(length(models)>1){
+    for(j in 2:length(models)){
+      
+      SIC_j=getsSic2(models[[j]]$cp,models[[j]]$sigSq,alpha,N)
+      sSic<-c(sSic,SIC_j)
+      
+    }
+  }
+  minVal<-which.min(sSic)
+  
+  return(models[[minVal]]$cp)  
+  
+}
+
+
 
 
 DWBS_DDT = function(data,
@@ -285,6 +338,7 @@ DWBS_DDT = function(data,
                     d,
                     numInt = 10,
                     thresh = 1.3584,
+                    alpha=1,
                     depth = "hs") {
   s_test <- 1
   e_test <- nrow(data)
@@ -299,22 +353,32 @@ DWBS_DDT = function(data,
   # get the possible models, select one with minimum GSC after
   # This computes the sigma sq hats
   if (!is.null(cp))
-    cp2 <-
-    getScwartzCriterias(cp[order(cp[, 2], decreasing = T), 1], data, depth)
+    cp2 <- getScwartzCriterias(cp[order(cp[, 2], decreasing = T), 1], data, depth)
   
   else
     cp2 <- list(list("cp" = NULL, "sigSq" = 1))
   
-  return(cp2)
+  
+  cp3=applySCH(cp2,alpha,N)
+  
+  
+  return(cp3)
 }
+
+
+
+
+
+
 
 set.seed(440)
 test_data=rbind(replicate(2,rnorm(100)),replicate(2,rnorm(100,5)))
+
 thresh=2
+DWBS(test_data, N=nrow(test_data), d=2, numInt=100, thresh = thresh, depth = "spat")
 
-DWBS(test_data, N, d, numInt=100, thresh = thresh, depth = "spat")
-DWBS_DDT(test_data, N, d, numInt=100, thresh = thresh, depth = "spat")
-
+thresh=0.5
+DWBS_DDT(test_data, N=nrow(test_data), d=2, numInt=100, thresh = thresh, alpha=1, depth = "spat")
 
 
 
