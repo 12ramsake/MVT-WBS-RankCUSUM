@@ -366,13 +366,42 @@ DWBS_DDT = function(data,
 }
 
 
+#Just returns the models, with the associated within segment variance
+DWBS_DDT_Just_Models = function(data,
+                    N,
+                    d,
+                    numInt = 10,
+                    thresh = 1.3584,
+                    alpha=1,
+                    depth = "hs") {
+  s_test <- 1
+  e_test <- nrow(data)
+  
+  #get intervals
+  intervals <- getIntervals(1:e_test, numInt)
+  
+  #runWBS
+  cp <- WBS(intervals , 2, e_test, thresh, data,depth)
+  
+  ## Schwartz modification
+  # get the possible models, select one with minimum GSC after
+  # This computes the sigma sq hats
+  if (!is.null(cp))
+    cp2 <- getScwartzCriterias(cp[order(cp[, 2], decreasing = T), 1], data, depth)
+  
+  else
+    cp2 <- list(list("cp" = NULL, "sigSq" = 1))
+  
 
-
+  return(cp2)
+}
 
 
 
 set.seed(440)
-test_data=rbind(replicate(2,rnorm(100)),replicate(2,rnorm(100,5)))
+test_data=rbind(replicate(2,rnorm(200)),replicate(2,rnorm(200,5)),replicate(2,rnorm(200,0.2)))
+# write.csv(test_data,'~\\research\\PhD Thesis\\MKWC changepoint\\WBS Codes\\test_dataset.csv')
+
 
 thresh=2
 DWBS(test_data, N=nrow(test_data), d=2, numInt=100, thresh = thresh, depth = "spat")
@@ -380,6 +409,8 @@ DWBS(test_data, N=nrow(test_data), d=2, numInt=100, thresh = thresh, depth = "sp
 thresh=0.5
 DWBS_DDT(test_data, N=nrow(test_data), d=2, numInt=100, thresh = thresh, alpha=1, depth = "spat")
 
+thresh=1
+DWBS_DDT_Just_Models(test_data, N=nrow(test_data), d=2, numInt=100, thresh = thresh, alpha=1, depth = "spat")
 
 
 
