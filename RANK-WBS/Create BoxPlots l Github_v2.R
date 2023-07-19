@@ -5,12 +5,12 @@ library(xtable)
 library(stringi)
 library(latex2exp)
 
-dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/Scen_1/"
+dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/CC/"
 setwd(dirr)
 
 
 
-Ns<-c(100,200,500,1000,2500,5000)
+Ns<-c(100,200)
 mod=100
 numInts<-floor(log(Ns))*mod
 sim.size=100
@@ -177,12 +177,10 @@ for(i in 1:numUniqueRuns){
   numInt=floor(log(Ns[params[1]]))*mod
   dName=names(distributions1)[params[3]]
   
-  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/Scen_1/"
+  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/CC/WBS"
   fileName_OC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_1_simsize_",sim.size,sep="")
   fileName_OC<-paste(dirr,fileName_OC,".Rda",sep="")
   load(fileName_OC)
-  
-  
   
   
   vals<-getDist(alpha)
@@ -191,14 +189,7 @@ for(i in 1:numUniqueRuns){
   sp<-cbind(sp,vals[[2]])
   m<-cbind(m,vals[[3]])
   m75<-cbind(m75,vals[[4]])
-  
-  
-  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/Scen_2/"
-  fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
-  fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
-  load(fileName_NC)
-  m_nc<-cbind(m_nc,getDist(alpha,F))
-  
+
 }
 
 
@@ -211,6 +202,7 @@ m752=m75[,order(paramterIndices[1:36,4])]
 bor=paramterIndices[order(paramterIndices[1:36,4]),][,3]
 out=paramterIndices[order(paramterIndices[1:36,4]),][,2]
 dimm=paramterIndices[order(paramterIndices[1:36,4]),][,4]
+
 
 a<-c(colors()[617],"black","violetred")
 bor=a[bor]

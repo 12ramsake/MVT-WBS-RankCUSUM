@@ -11,6 +11,7 @@ setwd(dirr)
 
 
 Ns<-c(100,200,500,1000,2500,5000)
+Ns<-c(1000,2500,5000)
 mod=100
 numInts<-floor(log(Ns))*mod
 sim.size=100
@@ -168,7 +169,7 @@ m_nc=NULL
 alpha=0.9
 
 for(i in 1:numUniqueRuns){
-  
+  print(i)
   params<-paramterIndices[i,]
   N=Ns[params[1]]
   theta=thetas[[params[2]]]
@@ -192,25 +193,26 @@ for(i in 1:numUniqueRuns){
   m<-cbind(m,vals[[3]])
   m75<-cbind(m75,vals[[4]])
   
-  
-  dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/Scen_2/"
-  fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
-  fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
-  load(fileName_NC)
-  m_nc<-cbind(m_nc,getDist(alpha,F))
+  # Uncomment for scen 2
+  # dirr<-"C:/Users/12RAM/OneDrive/Documents/research/PhD Thesis/MKWC changepoint/WBS_SIM/Scen_2/"
+  # fileName_NC<-paste0(N,"_",length(theta),"_",dName,"_",d,"_",numInt,"_","thresh",thresh,"_WBS_Ranks_Scen_2_simsize_",sim.size,sep="")
+  # fileName_NC<-paste(dirr,fileName_NC,".Rda",sep="")
+  # load(fileName_NC)
+  # m_nc<-cbind(m_nc,getDist(alpha,F))
   
 }
 
+v=73:108
+v=37:72
+v=1:36
+hs2=hs[,order(paramterIndices[v,4])]
+sp2=sp[,order(paramterIndices[v,4])]
+m2=m[,order(paramterIndices[v,4])]
+m752=m75[,order(paramterIndices[v,4])]
 
-
-hs2=hs[,order(paramterIndices[1:36,4])]
-sp2=sp[,order(paramterIndices[1:36,4])]
-m2=m[,order(paramterIndices[1:36,4])]
-m752=m75[,order(paramterIndices[1:36,4])]
-
-bor=paramterIndices[order(paramterIndices[1:36,4]),][,3]
-out=paramterIndices[order(paramterIndices[1:36,4]),][,2]
-dimm=paramterIndices[order(paramterIndices[1:36,4]),][,4]
+bor=paramterIndices[order(paramterIndices[v,4]),][,3]
+out=paramterIndices[order(paramterIndices[v,4]),][,2]
+dimm=paramterIndices[order(paramterIndices[v,4]),][,4]
 
 a<-c(colors()[617],"black","violetred")
 bor=a[bor]
@@ -226,6 +228,9 @@ makePlot(sp2)
 makePlot(hs2)
 makePlot(m2)
 makePlot(m752)
+
+
+
 
 
 
