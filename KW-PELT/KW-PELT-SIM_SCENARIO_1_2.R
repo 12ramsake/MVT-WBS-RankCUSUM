@@ -25,7 +25,7 @@ setwd(dirr)
 #simulation parameters
 
 #N
-Ns<-c(1000,2500,5000)
+Ns<-c(100,200,1000,2500,5000)
 #simulation size, num repetitions
 sim.size=100
 #2,3.5 cps
